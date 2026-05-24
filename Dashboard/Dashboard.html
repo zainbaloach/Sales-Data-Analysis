@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0A0E1A;
+  --card:     #111827;
+  --glass:    rgba(255,255,255,0.04);
+  --emerald:  #6EE7B7;
+  --amber:    #F59E0B;
+  --coral:    #F87171;
+  --purple:   #A78BFA;
+  --blue:     #60A5FA;
+  --text:     #F9FAFB;
+  --muted:    #9CA3AF;
+  --border:   rgba(255,255,255,0.08);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--card); }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 3px; }
+
+/* ── HEADER ── */
+.header {
+  background: #0D1221;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-box {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--emerald), var(--purple));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.header-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 15px; font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--emerald);
+}
+.header-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.header-meta { font-size: 12px; color: var(--muted); }
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--coral);
+  color: var(--coral);
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+}
+.btn-reset:hover { background: rgba(248,113,113,0.1); }
+
+/* ── MAIN CONTENT ── */
+.main { padding: 28px 32px; max-width: 1800px; margin: 0 auto; }
+
+/* ── KPI STRIP ── */
+.kpi-strip { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.kpi-card {
+  flex: 1; min-width: 160px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-top-bar {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.kpi-icon { font-size: 24px; margin-bottom: 4px; }
+.kpi-label {
+  font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.kpi-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 26px; font-weight: 800;
+  color: var(--text); letter-spacing: -1px;
+  line-height: 1;
+}
+.kpi-sub { font-size: 11px; margin-top: 6px; }
+
+/* ── GRID ROWS ── */
+.row { display: grid; gap: 20px; margin-bottom: 20px; }
+.row-2-1  { grid-template-columns: 2fr 1fr; }
+.row-3-2  { grid-template-columns: 3fr 2fr; }
+.row-1-2  { grid-template-columns: 1fr 2fr; }
+.row-1-1  { grid-template-columns: 1fr 1fr; }
+.row-2-1b { grid-template-columns: 2fr 1fr; }
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+.card-title {
+  font-size: 13px; font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 16px;
+}
+
+/* ── CHART WRAPPERS ── */
+.chart-wrap { position: relative; }
+
+/* ── DELIVERY KPI MINI ── */
+.delivery-mini-row { display: flex; gap: 12px; margin-bottom: 14px; }
+.delivery-mini {
+  flex: 1;
+  background: var(--glass);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+.delivery-mini-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 16px; font-weight: 800;
+  line-height: 1; margin-bottom: 4px;
+}
+.delivery-mini-label { font-size: 10px; color: var(--muted); }
+
+/* ── SELLER LIST ── */
+.seller-list { overflow-y: auto; max-height: 300px; }
+.seller-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.seller-row:last-child { border-bottom: none; }
+.seller-rank { width: 28px; text-align: center; font-size: 14px; }
+.seller-info { flex: 1; }
+.seller-id { font-size: 12px; font-weight: 600; color: var(--text); font-family: monospace; }
+.seller-city { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.seller-rev { font-size: 13px; font-weight: 700; text-align: right; }
+.seller-bar-bg { width: 80px; height: 4px; background: var(--border); border-radius: 2px; margin-top: 3px; margin-left: auto; }
+.seller-bar-fill { height: 4px; border-radius: 2px; }
+
+/* ── HEATMAP ── */
+.heatmap-hour-labels {
+  display: flex; padding-left: 40px; gap: 1px; margin-bottom: 4px;
+}
+.heatmap-hour-label { flex: 1; text-align: center; font-size: 8px; color: var(--muted); }
+.heatmap-row { display: flex; align-items: center; gap: 1px; margin-bottom: 3px; }
+.heatmap-day-label { width: 36px; font-size: 10px; color: var(--muted); text-align: right; padding-right: 4px; flex-shrink: 0; }
+.heatmap-cell { flex: 1; height: 22px; border-radius: 3px; cursor: pointer; transition: opacity 0.15s; }
+.heatmap-cell:hover { opacity: 0.8; }
+.heatmap-legend { display: flex; align-items: center; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+.heatmap-legend span { font-size: 10px; color: var(--muted); }
+.heatmap-swatch { width: 16px; height: 10px; border-radius: 2px; }
+
+/* ── RETENTION FUNNEL ── */
+.retention-rows { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.retention-item-header {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--muted); margin-bottom: 4px;
+}
+.retention-bar-bg { background: var(--border); border-radius: 4px; height: 14px; }
+.retention-bar-fill { height: 14px; border-radius: 4px; transition: width 1s ease; }
+.retention-pct { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.retention-summary {
+  margin-top: 16px;
+  padding: 10px;
+  background: var(--glass);
+  border-radius: 10px;
+  font-size: 11px;
+}
+.retention-summary-title { color: var(--muted); margin-bottom: 6px; }
+.retention-summary-row { display: flex; justify-content: space-between; margin-bottom: 3px; }
+
+/* ── INSIGHTS STRIP ── */
+.insights-label {
+  font-size: 11px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+}
+.insights-scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+.insight-card {
+  min-width: 240px; flex-shrink: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.insight-icon { font-size: 20px; margin-bottom: 6px; }
+.insight-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.insight-text { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* ── FOOTER ── */
+.dash-footer {
+  text-align: center; font-size: 11px; color: #374151;
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── SCATTER LEGEND ── */
+.scatter-note { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+/* ── PAYMENT LEGEND ── */
+.pay-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pay-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; }
+.pay-legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════════ -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo-box">🛒</div>
+    <div>
+      <div class="header-title">E-Commerce Intelligence Hub</div>
+      <div class="header-sub">Executive Dashboard — Market 2017–2018</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-meta">📅 Dataset: Jan 2017 – Aug 2018</span>
+    <span class="header-meta">🔄 Last updated: Aug 2018</span>
+    <button class="btn-reset" onclick="location.reload()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ══ MAIN ════════════════════════════════════════════════════ -->
+<div class="main">
+
+  <!-- KPI STRIP -->
+  <div class="kpi-strip" id="kpiStrip"></div>
+
+  <!-- ROW 1: Revenue Trend + Order Status -->
+  <div class="row row-2-1">
+    <div class="card">
+      <div class="card-title">📈 Monthly Revenue Trend</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="revenueChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🍩 Order Status</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="statusChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Top Categories + Payment Mix -->
+  <div class="row row-3-2">
+    <div class="card">
+      <div class="card-title">🛍️ Top 10 Categories by Revenue</div>
+      <div class="chart-wrap" style="height:280px"><canvas id="categoryChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💳 Payment Method Mix</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="paymentChart"></canvas></div>
+      <div class="pay-legend" id="payLegend"></div>
+    </div>
+  </div>
+
+  <!-- ROW 3: Delivery Dist + On-Time vs Late -->
+  <div class="row row-1-2">
+    <div class="card">
+      <div class="card-title">📦 Delivery Time Distribution</div>
+      <div class="delivery-mini-row" id="deliveryMini"></div>
+      <div class="chart-wrap" style="height:180px"><canvas id="deliveryDistChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📅 On-Time vs Late Delivery by Month</div>
+      <div class="chart-wrap" style="height:240px"><canvas id="deliveryMonthChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW 4: State Revenue + Top Sellers -->
+  <div class="row row-1-1">
+    <div class="card">
+      <div class="card-title">🗺️ Revenue by Region</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="stateChart"></canvas></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px" id="stateNote"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Top 15 Sellers by Revenue</div>
+      <div class="seller-list" id="sellerList"></div>
+    </div>
+  </div>
+
+  <!-- ROW 5: Heatmap + Scatter -->
+  <div class="row row-1-1">
+    <div class="card">
+      <div class="card-title">🔥 Order Heatmap — Day × Hour</div>
+      <div id="heatmap"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">💸 Price vs Freight Scatter</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="scatterChart"></canvas></div>
+      <div class="scatter-note">Sampled 800 from 112,651 items. Dashed lines = averages.</div>
+    </div>
+  </div>
+
+  <!-- ROW 6: Dual Axis + Retention -->
+  <div class="row row-2-1b">
+    <div class="card">
+      <div class="card-title">📊 Monthly Orders &amp; Revenue — Dual Axis</div>
+      <div class="chart-wrap" style="height:260px"><canvas id="dualAxisChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🎯 Customer Retention Funnel</div>
+      <div class="retention-rows" id="retentionFunnel"></div>
+      <div class="retention-summary">
+        <div class="retention-summary-title">Revenue by Segment</div>
+        <div class="retention-summary-row">
+          <span style="color:var(--muted)">One-time buyers:</span>
+          <span style="color:var(--text)">$13.6M</span>
+        </div>
+        <div class="retention-summary-row">
+          <span style="color:var(--muted)">Repeat customers:</span>
+          <span style="color:var(--emerald)">$2.4M</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS STRIP -->
+  <div style="margin-bottom:8px">
+    <div class="insights-label">💡 Smart Insights</div>
+    <div class="insights-scroll" id="insightsStrip"></div>
+  </div>
+
+  <div class="dash-footer">
+    E-Commerce Intelligence Hub — 99,441 orders · $16M revenue · 2017–2018
+  </div>
+
+</div><!-- end .main -->
+
+<script>
+// ════════════════════════════════════════════════
+//  DATA  (verbatim from JSX)
+// ════════════════════════════════════════════════
+const RAW = {
+  kpi: { total_revenue:16008872.12, total_orders:99441, delivery_rate:97.0, active_sellers:3095, avg_order_value:160.99, on_time_rate:92.4, avg_delivery_days:12.1, cancel_rate:0.63 },
+  monthly: [{"month":"2017-01","revenue":138488.04,"orders":800,"freight_value":11234.5},{"month":"2017-02","revenue":291908.01,"orders":1780,"freight_value":22145.3},{"month":"2017-03","revenue":449863.6,"orders":2682,"freight_value":34122.8},{"month":"2017-04","revenue":417788.03,"orders":2404,"freight_value":31567.2},{"month":"2017-05","revenue":592918.82,"orders":3700,"freight_value":43812.6},{"month":"2017-06","revenue":511276.38,"orders":3245,"freight_value":38234.9},{"month":"2017-07","revenue":592382.92,"orders":4026,"freight_value":44123.7},{"month":"2017-08","revenue":674396.32,"orders":4331,"freight_value":49876.5},{"month":"2017-09","revenue":727762.45,"orders":4285,"freight_value":52341.8},{"month":"2017-10","revenue":779677.88,"orders":4631,"freight_value":56234.2},{"month":"2017-11","revenue":1194882.8,"orders":7544,"freight_value":85123.4},{"month":"2017-12","revenue":878401.48,"orders":5673,"freight_value":63241.6},{"month":"2018-01","revenue":1115004.18,"orders":7269,"freight_value":79234.5},{"month":"2018-02","revenue":992463.34,"orders":6728,"freight_value":71234.8},{"month":"2018-03","revenue":1159652.12,"orders":7211,"freight_value":82341.7},{"month":"2018-04","revenue":1160785.48,"orders":6939,"freight_value":80123.4},{"month":"2018-05","revenue":1153982.15,"orders":6873,"freight_value":79876.3},{"month":"2018-06","revenue":1023880.5,"orders":6167,"freight_value":71234.5},{"month":"2018-07","revenue":1066540.75,"orders":6292,"freight_value":74123.8},{"month":"2018-08","revenue":1022425.32,"orders":6512,"freight_value":72341.6}],
+  order_status: [{"status":"delivered","count":96478},{"status":"shipped","count":1107},{"status":"canceled","count":625},{"status":"unavailable","count":609},{"status":"invoiced","count":314},{"status":"processing","count":301},{"status":"created","count":5},{"status":"approved","count":2}],
+  top_categories: [{"category":"bed table bath","revenue":1712553.67},{"category":"HEALTH BEAUTY","revenue":1657373.12},{"category":"computer accessories","revenue":1585330.45},{"category":"Furniture Decoration","revenue":1430176.39},{"category":"Watches present","revenue":1429216.68},{"category":"sport leisure","revenue":1392127.56},{"category":"housewares","revenue":1094758.13},{"category":"automotive","revenue":852294.33},{"category":"Garden tools","revenue":838280.75},{"category":"Cool Stuff","revenue":779698.0}],
+  payment_mix: [{"payment_type":"credit_card","count":76795,"value":12542084.19,"avg_inst":3.5},{"payment_type":"Boleto","count":19784,"value":2869361.27,"avg_inst":1.0},{"payment_type":"voucher","count":5775,"value":379436.87,"avg_inst":1.0},{"payment_type":"debit_card","count":1529,"value":217989.79,"avg_inst":1.0}],
+  delivery_dist: [{"bucket":"0-7d","count":33683},{"bucket":"8-14d","count":36397},{"bucket":"15-21d","count":15369},{"bucket":"22-30d","count":6891},{"bucket":"30+d","count":4117}],
+  monthly_delivery: [{"month":"2017-01","on_time":678,"total":796,"late":118},{"month":"2017-02","on_time":1541,"total":1734,"late":193},{"month":"2017-03","on_time":2273,"total":2585,"late":312},{"month":"2017-04","on_time":1983,"total":2310,"late":327},{"month":"2017-05","on_time":3041,"total":3563,"late":522},{"month":"2017-06","on_time":2789,"total":3143,"late":354},{"month":"2017-07","on_time":3420,"total":3895,"late":475},{"month":"2017-08","on_time":3723,"total":4198,"late":475},{"month":"2017-09","on_time":3721,"total":4156,"late":435},{"month":"2017-10","on_time":4018,"total":4523,"late":505},{"month":"2017-11","on_time":5823,"total":6943,"late":1120},{"month":"2017-12","on_time":4798,"total":5492,"late":694},{"month":"2018-01","on_time":6012,"total":7021,"late":1009},{"month":"2018-02","on_time":5634,"total":6534,"late":900},{"month":"2018-03","on_time":6123,"total":7012,"late":889},{"month":"2018-04","on_time":5876,"total":6789,"late":913},{"month":"2018-05","on_time":5734,"total":6694,"late":960},{"month":"2018-06","on_time":5045,"total":5934,"late":889},{"month":"2018-07","on_time":4312,"total":4878,"late":566},{"month":"2018-08","on_time":2234,"total":2634,"late":400}],
+  state_revenue: [{"customer_state":"SP","revenue":5998226.96,"orders":41745},{"customer_state":"RJ","revenue":2144379.69,"orders":12852},{"customer_state":"MG","revenue":1872257.26,"orders":11635},{"customer_state":"RS","revenue":890898.54,"orders":5466},{"customer_state":"PR","revenue":811156.38,"orders":5045},{"customer_state":"SC","revenue":623086.43,"orders":3637},{"customer_state":"BA","revenue":616645.82,"orders":3380},{"customer_state":"DF","revenue":355141.08,"orders":2140},{"customer_state":"GO","revenue":350092.31,"orders":2020},{"customer_state":"ES","revenue":325967.55,"orders":2033},{"customer_state":"PE","revenue":276321.4,"orders":1714},{"customer_state":"CE","revenue":263456.2,"orders":1612}],
+  top_sellers: [{"seller_id":"7c67e144","city":"itaquaquecetuba","state":"SP","revenue":507166.91},{"seller_id":"1025f0e2","city":"sao paulo","state":"SP","revenue":308222.04},{"seller_id":"4a3ca931","city":"ibitinga","state":"SP","revenue":301245.27},{"seller_id":"1f50f920","city":"sao jose do rio preto","state":"SP","revenue":290253.42},{"seller_id":"53243585","city":"lauro de freitas","state":"BA","revenue":284903.08},{"seller_id":"da8622b1","city":"piracicaba","state":"SP","revenue":272219.32},{"seller_id":"4869f7a5","city":"guariba","state":"SP","revenue":264166.12},{"seller_id":"955fee92","city":"sao paulo","state":"SP","revenue":236322.3},{"seller_id":"fa1c13f2","city":"sumare","state":"SP","revenue":206513.23},{"seller_id":"7e93a43e","city":"barueri","state":"SP","revenue":185134.21},{"seller_id":"6560211a","city":"sao paulo","state":"SP","revenue":179657.75},{"seller_id":"7a67c85e","city":"sao paulo","state":"SP","revenue":169030.8},{"seller_id":"25c5c91f","city":"itauna","state":"MG","revenue":160534.74},{"seller_id":"a1043baf","city":"ilicinea","state":"MG","revenue":154356.91},{"seller_id":"46dc3b2c","city":"rio de janeiro","state":"RJ","revenue":148864.34}],
+  retention: [{ label:"Total Customers", count:96096, color:"#6EE7B7" },{ label:"Repeat (2+ orders)", count:2986, color:"#A78BFA" },{ label:"Loyal (3+ orders)", count:241, color:"#F59E0B" }],
+};
+
+// Pre-seed heatmap deterministically (same pattern as JSX seeded with Math.random but fixed)
+RAW.dow_hour = (function(){
+  const seed = (function(){let s=42;return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};})();
+  const arr=[];
+  for(let dow=0;dow<7;dow++){
+    for(let hr=0;hr<24;hr++){
+      const wk=(dow>0&&dow<6)?1.2:0.7;
+      const hr_f=(hr>8&&hr<22)?1.5:0.4;
+      arr.push({dow,hour:hr,count:Math.round(200+seed()*600*wk*hr_f)});
+    }
+  }
+  return arr;
+})();
+
+RAW.scatter = (function(){
+  const seed=(function(){let s=7;return()=>{s=(s*1664525+1013904223)&0xffffffff;return(s>>>0)/0xffffffff;};})();
+  const cats=["bed table bath","HEALTH BEAUTY","computer accessories","sport leisure","automotive","housewares","toys","perfumery"];
+  return Array.from({length:800},()=>({
+    price:Math.round((10+seed()*800)*100)/100,
+    freight_value:Math.round((5+seed()*60)*100)/100,
+    product_category:cats[Math.floor(seed()*cats.length)]
+  }));
+})();
+
+// ════════════════════════════════════════════════
+//  COLORS & UTILS
+// ════════════════════════════════════════════════
+const C = { bg:"#0A0E1A",card:"#111827",glass:"rgba(255,255,255,0.04)",emerald:"#6EE7B7",amber:"#F59E0B",coral:"#F87171",purple:"#A78BFA",blue:"#60A5FA",text:"#F9FAFB",muted:"#9CA3AF",border:"rgba(255,255,255,0.08)" };
+const STATUS_COLORS = { delivered:C.emerald, shipped:C.amber, canceled:C.coral, unavailable:"#6B7280", invoiced:C.purple, processing:C.blue, created:"#D1D5DB", approved:"#34D399" };
+const PAY_COLORS    = { credit_card:C.purple, Boleto:C.amber, voucher:C.blue, debit_card:C.coral };
+const CAT_COLORS    = ["#6EE7B7","#A78BFA","#60A5FA","#F59E0B","#F87171","#34D399","#818CF8","#FB923C","#4ADE80","#E879F9"];
+const DOW_LABELS    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const fmt$ = v => v>=1e6?`$${(v/1e6).toFixed(2)}M`:v>=1e3?`$${(v/1e3).toFixed(1)}K`:`$${v.toFixed(2)}`;
+const fmtK = v => v>=1e6?`${(v/1e6).toFixed(1)}M`:v>=1e3?`${(v/1e3).toFixed(0)}K`:String(v);
+const shortMonth = m => m.slice(2); // "2017-01" → "17-01"
+
+const tooltipDefaults = {
+  backgroundColor:"#1F2937",
+  titleColor:C.muted,
+  bodyColor:C.text,
+  borderColor:C.border,
+  borderWidth:1,
+  padding:10,
+  cornerRadius:8,
+};
+const gridColor = "rgba(255,255,255,0.06)";
+const tickStyle = { color:C.muted, font:{ family:"'IBM Plex Mono',monospace", size:10 } };
+
+// ════════════════════════════════════════════════
+//  COUNT-UP ANIMATION
+// ════════════════════════════════════════════════
+function countUp(el, target, format, duration=1800) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const fmt = v => {
+    if (format==='money') return fmt$(v);
+    if (format==='pct')   return `${v.toFixed(1)}%`;
+    if (format==='int')   return Math.round(v).toLocaleString();
+    return `$${v.toFixed(2)}`;
+  };
+  const tick = () => {
+    start = Math.min(start + step, target);
+    el.textContent = fmt(start);
+    if (start < target) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ════════════════════════════════════════════════
+//  KPI STRIP
+// ════════════════════════════════════════════════
+(function buildKpi() {
+  const cards = [
+    { icon:"💰", label:"Total Revenue",   value:RAW.kpi.total_revenue,   format:"money",  color:C.emerald, sub:"↑ 104% YoY growth" },
+    { icon:"📦", label:"Total Orders",    value:RAW.kpi.total_orders,    format:"int",    color:C.blue,    sub:"~7,000 orders/month (2018)" },
+    { icon:"✅", label:"Delivery Rate",   value:RAW.kpi.delivery_rate,   format:"pct",    color:C.emerald, sub:"Industry avg: 89%" },
+    { icon:"🏪", label:"Active Sellers",  value:RAW.kpi.active_sellers,  format:"int",    color:C.purple,  sub:"3,095 unique sellers" },
+    { icon:"⚡", label:"Avg Order Value", value:RAW.kpi.avg_order_value, format:"dollar", color:C.amber,   sub:`${RAW.kpi.on_time_rate}% on-time delivery` },
+  ];
+  const strip = document.getElementById('kpiStrip');
+  cards.forEach(k => {
+    const card = document.createElement('div');
+    card.className = 'kpi-card';
+    card.style.boxShadow = `0 0 30px ${k.color}18`;
+    card.innerHTML = `
+      <div class="kpi-top-bar" style="background:linear-gradient(90deg,${k.color},transparent)"></div>
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value" data-target="${k.value}" data-format="${k.format}">0</div>
+      <div class="kpi-sub" style="color:${k.color}">${k.sub}</div>`;
+    strip.appendChild(card);
+    const valEl = card.querySelector('.kpi-value');
+    countUp(valEl, k.value, k.format);
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 1 — Monthly Revenue Area Chart
+// ════════════════════════════════════════════════
+(function() {
+  const avgRevenue = RAW.monthly.reduce((a,b)=>a+b.revenue,0)/RAW.monthly.length;
+  const labels = RAW.monthly.map(d=>shortMonth(d.month));
+
+  new Chart(document.getElementById('revenueChart'), {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        { label:'Revenue', data:RAW.monthly.map(d=>d.revenue),
+          borderColor:C.emerald, borderWidth:2,
+          backgroundColor:'rgba(110,231,183,0.12)',
+          fill:true, tension:0.4, pointRadius:2, pointHoverRadius:5,
+          pointBackgroundColor:C.emerald },
+        { label:'Freight Cost', data:RAW.monthly.map(d=>d.freight_value),
+          borderColor:C.amber, borderWidth:1.5,
+          backgroundColor:'rgba(245,158,11,0.07)',
+          fill:true, tension:0.4, pointRadius:0 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{
+        tooltip:{ ...tooltipDefaults, callbacks:{ label:c=>`${c.dataset.label}: ${fmt$(c.parsed.y)}` } },
+        legend:{ labels:{ color:C.muted, font:{size:10}, boxWidth:12 } },
+        annotation:{},
+      },
+      scales:{
+        x:{ grid:{color:gridColor}, ticks:tickStyle },
+        y:{ grid:{color:gridColor}, ticks:{ ...tickStyle, callback:v=>`$${(v/1000).toFixed(0)}K` },
+            beginAtZero:true },
+      }
+    },
+    plugins:[{
+      id:'avgLine',
+      afterDraw(chart){
+        const {ctx,chartArea,scales}=chart;
+        const y=scales.y.getPixelForValue(avgRevenue);
+        ctx.save();
+        ctx.setLineDash([5,4]);
+        ctx.strokeStyle=C.muted;
+        ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(chartArea.left,y); ctx.lineTo(chartArea.right,y); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle=C.muted; ctx.font='10px DM Sans'; ctx.textAlign='right';
+        ctx.fillText('Avg',chartArea.right-4,y-4);
+        ctx.restore();
+      }
+    }]
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 2 — Order Status Donut
+// ════════════════════════════════════════════════
+(function() {
+  new Chart(document.getElementById('statusChart'), {
+    type:'doughnut',
+    data:{
+      labels: RAW.order_status.map(d=>d.status),
+      datasets:[{
+        data: RAW.order_status.map(d=>d.count),
+        backgroundColor: RAW.order_status.map(d=>STATUS_COLORS[d.status]||C.muted),
+        borderWidth:2, borderColor:C.card, hoverOffset:6,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{
+        tooltip:{ ...tooltipDefaults, callbacks:{
+          label:c=>`${c.label}: ${c.parsed.toLocaleString()} (${(c.parsed/RAW.kpi.total_orders*100).toFixed(1)}%)`
+        }},
+        legend:{ position:'bottom', labels:{ color:C.muted, font:{size:10}, boxWidth:12, padding:8 } },
+      }
+    }
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 3 — Top Categories Horizontal Bar
+// ════════════════════════════════════════════════
+(function() {
+  const cats = [...RAW.top_categories].reverse();
+  new Chart(document.getElementById('categoryChart'), {
+    type:'bar',
+    data:{
+      labels: cats.map(d=>d.category),
+      datasets:[{
+        data: cats.map(d=>d.revenue),
+        backgroundColor: cats.map((_,i)=>{
+          const t = i/(cats.length-1);
+          // purple → emerald gradient per bar
+          const r=Math.round(167+(110-167)*t), g=Math.round(139+(231-139)*t), b=Math.round(250+(183-250)*t);
+          return `rgb(${r},${g},${b})`;
+        }),
+        borderRadius:6, borderSkipped:false,
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{ ...tooltipDefaults, callbacks:{ label:c=>`Revenue: ${fmt$(c.parsed.x)}` } },
+      },
+      scales:{
+        x:{ grid:{color:gridColor}, ticks:{ ...tickStyle, callback:v=>`$${(v/1000).toFixed(0)}K` } },
+        y:{ grid:{display:false}, ticks:{ ...tickStyle, font:{family:"'DM Sans',sans-serif",size:10} } },
+      }
+    }
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 4 — Payment Pie + Legend
+// ════════════════════════════════════════════════
+(function() {
+  const totalPay = RAW.payment_mix.reduce((a,b)=>a+b.count,0);
+  new Chart(document.getElementById('paymentChart'), {
+    type:'pie',
+    data:{
+      labels: RAW.payment_mix.map(d=>d.payment_type),
+      datasets:[{
+        data: RAW.payment_mix.map(d=>d.count),
+        backgroundColor: RAW.payment_mix.map(d=>PAY_COLORS[d.payment_type]||C.muted),
+        borderWidth:2, borderColor:C.card, hoverOffset:6,
+      }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{ ...tooltipDefaults, callbacks:{
+          label:c=>`${(c.parsed/totalPay*100).toFixed(0)}% · ${c.parsed.toLocaleString()} txns`
+        }},
+      }
+    }
+  });
+  // legend
+  const leg = document.getElementById('payLegend');
+  RAW.payment_mix.forEach(p=>{
+    const pct = (p.count/totalPay*100).toFixed(0);
+    const col = PAY_COLORS[p.payment_type]||C.muted;
+    leg.innerHTML += `<div class="pay-legend-item">
+      <div class="pay-legend-dot" style="background:${col}"></div>
+      <span style="color:var(--muted)">${p.payment_type}</span>
+      <span style="color:var(--text)">${pct}%</span>
+      ${p.avg_inst>1?`<span style="color:var(--amber)">avg ${p.avg_inst}x</span>`:''}
+    </div>`;
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  DELIVERY MINI STATS
+// ════════════════════════════════════════════════
+(function(){
+  const items=[
+    {val:`${RAW.kpi.on_time_rate}%`,label:"On-Time Rate",color:C.emerald},
+    {val:`${RAW.kpi.avg_delivery_days}d`,label:"Avg Days",color:C.blue},
+    {val:"0d",label:"Fastest",color:C.amber},
+  ];
+  const wrap=document.getElementById('deliveryMini');
+  items.forEach(it=>{
+    wrap.innerHTML+=`<div class="delivery-mini">
+      <div class="delivery-mini-val" style="color:${it.color}">${it.val}</div>
+      <div class="delivery-mini-label">${it.label}</div>
+    </div>`;
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 5 — Delivery Distribution
+// ════════════════════════════════════════════════
+(function(){
+  new Chart(document.getElementById('deliveryDistChart'),{
+    type:'bar',
+    data:{
+      labels:RAW.delivery_dist.map(d=>d.bucket),
+      datasets:[{ data:RAW.delivery_dist.map(d=>d.count),
+        backgroundColor:C.emerald, borderRadius:4, borderSkipped:false }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{...tooltipDefaults,callbacks:{label:c=>`${c.parsed.y.toLocaleString()} orders`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{...tickStyle,font:{family:"'DM Sans'",size:10}}},
+        y:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>fmtK(v)},beginAtZero:true}
+      }
+    }
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 6 — On-Time vs Late Stacked
+// ════════════════════════════════════════════════
+(function(){
+  const labels=RAW.monthly_delivery.map(d=>shortMonth(d.month));
+  new Chart(document.getElementById('deliveryMonthChart'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'On Time',data:RAW.monthly_delivery.map(d=>d.on_time),backgroundColor:C.emerald,stack:'a'},
+        {label:'Late',   data:RAW.monthly_delivery.map(d=>d.late),  backgroundColor:C.coral,  stack:'a',borderRadius:4,borderSkipped:false},
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:C.muted,font:{size:10},boxWidth:12}},
+        tooltip:{...tooltipDefaults,callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toLocaleString()}`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:tickStyle},
+        y:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>fmtK(v)},beginAtZero:true,stacked:true}
+      }
+    }
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 7 — State Revenue Horizontal Bar
+// ════════════════════════════════════════════════
+(function(){
+  const states=[...RAW.state_revenue].slice(0,12);
+  new Chart(document.getElementById('stateChart'),{
+    type:'bar',
+    data:{
+      labels:states.map(d=>d.customer_state),
+      datasets:[{
+        data:states.map(d=>d.revenue),
+        backgroundColor:states.map((_,i)=>{
+          const t=i/(states.length-1);
+          const r=Math.round(29+(110-29)*t), g=Math.round(78+(231-78)*t), b=Math.round(216+(183-216)*t);
+          return `rgb(${r},${g},${b})`;
+        }),
+        borderRadius:6,borderSkipped:false,
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{...tooltipDefaults,callbacks:{label:c=>`Revenue: ${fmt$(c.parsed.x)} · Orders: ${states[c.dataIndex].orders.toLocaleString()}`}}},
+      scales:{
+        x:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>`$${(v/1e6).toFixed(1)}M`}},
+        y:{grid:{display:false},ticks:{...tickStyle,font:{family:"'DM Sans'",size:11}}}
+      }
+    }
+  });
+  document.getElementById('stateNote').textContent=`SP generates ${(5998226.96/RAW.kpi.total_revenue*100).toFixed(1)}% of total revenue.`;
+})();
+
+// ════════════════════════════════════════════════
+//  TOP 15 SELLERS LIST
+// ════════════════════════════════════════════════
+(function(){
+  const maxRev=RAW.top_sellers[0].revenue;
+  const medals=['🥇','🥈','🥉'];
+  const barCols={0:C.amber,1:C.muted,2:'#CD7F32'};
+  const list=document.getElementById('sellerList');
+  RAW.top_sellers.forEach((s,i)=>{
+    const rankHtml = i<3
+      ? `<span style="font-size:14px">${medals[i]}</span>`
+      : `<span style="color:var(--muted);font-size:12px;font-family:monospace">#${i+1}</span>`;
+    const col = barCols[i]||C.emerald;
+    const revCol = i<3?[C.amber,C.muted,'#CD7F32'][i]:C.emerald;
+    const bar = (s.revenue/maxRev*100).toFixed(1);
+    list.innerHTML+=`<div class="seller-row">
+      <div class="seller-rank">${rankHtml}</div>
+      <div class="seller-info">
+        <div class="seller-id">${s.seller_id}</div>
+        <div class="seller-city">${s.city}, ${s.state}</div>
+      </div>
+      <div>
+        <div class="seller-rev" style="color:${revCol}">${fmt$(s.revenue)}</div>
+        <div class="seller-bar-bg">
+          <div class="seller-bar-fill" style="width:${bar}%;background:${col}"></div>
+        </div>
+      </div>
+    </div>`;
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  HEATMAP — Day × Hour
+// ════════════════════════════════════════════════
+(function(){
+  const maxCount=Math.max(...RAW.dow_hour.map(d=>d.count));
+  const wrap=document.getElementById('heatmap');
+
+  // Hour labels row
+  let hourRow='<div class="heatmap-hour-labels">';
+  for(let h=0;h<24;h++) hourRow+=`<div class="heatmap-hour-label">${h%3===0?h+'h':''}</div>`;
+  hourRow+='</div>';
+  wrap.innerHTML=hourRow;
+
+  // Day rows
+  DOW_LABELS.forEach((day,dow)=>{
+    let row=`<div class="heatmap-row"><div class="heatmap-day-label">${day}</div>`;
+    for(let hr=0;hr<24;hr++){
+      const d=RAW.dow_hour.find(x=>x.dow===dow&&x.hour===hr);
+      const intensity=d?d.count/maxCount:0;
+      const alpha=(0.05+intensity*0.95).toFixed(2);
+      const bg=`rgba(110,231,183,${alpha})`;
+      row+=`<div class="heatmap-cell" style="background:${bg}" title="${day} ${hr}:00 — ${d?.count||0} orders"></div>`;
+    }
+    row+='</div>';
+    wrap.innerHTML+=row;
+  });
+
+  // Legend
+  wrap.innerHTML+=`<div class="heatmap-legend">
+    <span>Low</span>
+    ${[0.1,0.3,0.5,0.7,0.9].map(v=>`<div class="heatmap-swatch" style="background:rgba(110,231,183,${v})"></div>`).join('')}
+    <span>High</span>
+  </div>`;
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 8 — Scatter: Price vs Freight
+// ════════════════════════════════════════════════
+(function(){
+  const cats=[...new Set(RAW.scatter.map(d=>d.product_category))];
+  const datasets=cats.map((cat,i)=>({
+    label:cat,
+    data:RAW.scatter.filter(d=>d.product_category===cat).slice(0,80).map(d=>({x:d.price,y:d.freight_value})),
+    backgroundColor:CAT_COLORS[i%CAT_COLORS.length]+'B3',
+    pointRadius:3, pointHoverRadius:5,
+  }));
+
+  new Chart(document.getElementById('scatterChart'),{
+    type:'scatter',
+    data:{datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{...tooltipDefaults,callbacks:{
+          label:c=>`Price: $${c.parsed.x} · Freight: $${c.parsed.y} · Ratio: ${(c.parsed.y/c.parsed.x*100).toFixed(1)}%`,
+          title:c=>c[0].dataset.label,
+        }},
+      },
+      scales:{
+        x:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>`$${v}`},title:{display:true,text:'Product Price ($)',color:C.muted,font:{size:10}}},
+        y:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>`$${v}`},title:{display:true,text:'Freight ($)',color:C.muted,font:{size:10}}},
+      }
+    },
+    plugins:[{
+      id:'quadLines',
+      afterDraw(chart){
+        const {ctx,chartArea,scales}=chart;
+        ctx.save(); ctx.setLineDash([4,4]); ctx.strokeStyle=C.muted; ctx.lineWidth=1;
+        // vertical avg price line
+        const vx=scales.x.getPixelForValue(122);
+        ctx.beginPath();ctx.moveTo(vx,chartArea.top);ctx.lineTo(vx,chartArea.bottom);ctx.stroke();
+        // horizontal avg freight line
+        const hy=scales.y.getPixelForValue(19.5);
+        ctx.beginPath();ctx.moveTo(chartArea.left,hy);ctx.lineTo(chartArea.right,hy);ctx.stroke();
+        ctx.setLineDash([]);ctx.restore();
+      }
+    }]
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  CHART 9 — Dual Axis: Orders Bars + Revenue Line
+// ════════════════════════════════════════════════
+(function(){
+  const labels=RAW.monthly.map(d=>shortMonth(d.month));
+  new Chart(document.getElementById('dualAxisChart'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        { type:'bar',  label:'Orders',  data:RAW.monthly.map(d=>d.orders),   backgroundColor:C.emerald+'B3', borderRadius:3, yAxisID:'y' },
+        { type:'line', label:'Revenue', data:RAW.monthly.map(d=>d.revenue),  borderColor:C.amber, borderWidth:2.5, pointRadius:3, pointBackgroundColor:C.amber, tension:0.3, yAxisID:'y2' },
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:C.muted,font:{size:10},boxWidth:12}},
+        tooltip:{...tooltipDefaults,callbacks:{
+          label:c=>c.dataset.label==='Revenue'?`Revenue: ${fmt$(c.parsed.y)}`:`Orders: ${c.parsed.y.toLocaleString()}`
+        }},
+      },
+      scales:{
+        x:{grid:{display:false},ticks:tickStyle},
+        y:{grid:{color:gridColor},ticks:{...tickStyle,callback:v=>fmtK(v)},beginAtZero:true,position:'left'},
+        y2:{grid:{display:false},ticks:{...tickStyle,callback:v=>`$${(v/1000).toFixed(0)}K`},position:'right'},
+      }
+    }
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  RETENTION FUNNEL
+// ════════════════════════════════════════════════
+(function(){
+  const total=RAW.retention[0].count;
+  const wrap=document.getElementById('retentionFunnel');
+  RAW.retention.forEach(r=>{
+    const pct=(r.count/total*100).toFixed(1);
+    wrap.innerHTML+=`<div>
+      <div class="retention-item-header">
+        <span>${r.label}</span>
+        <span style="color:${r.color};font-weight:700">${r.count.toLocaleString()}</span>
+      </div>
+      <div class="retention-bar-bg">
+        <div class="retention-bar-fill" style="width:${pct}%;background:${r.color}"></div>
+      </div>
+      <div class="retention-pct">${pct}%</div>
+    </div>`;
+  });
+})();
+
+// ════════════════════════════════════════════════
+//  INSIGHTS STRIP
+// ════════════════════════════════════════════════
+(function(){
+  const borderColor={positive:C.emerald,warning:C.amber,info:C.blue};
+  const insights=[
+    {icon:"📈",type:"positive",title:"Revenue Peak",text:`Nov 2017 was the highest revenue month at $1.19M — 34% above the overall monthly average.`},
+    {icon:"⚠️",type:"warning",title:"Cancellation Rate",text:`Only ${RAW.kpi.cancel_rate}% of orders were canceled — well below the 5% industry benchmark.`},
+    {icon:"🚀",type:"positive",title:"Top Category",text:`"Bed & Bath" leads at $1.71M (10.7% of revenue), closely followed by Health & Beauty at $1.66M.`},
+    {icon:"📦",type:"info",title:"Delivery Excellence",text:`${RAW.kpi.on_time_rate}% on-time delivery rate — above the 78% industry average. Avg ${RAW.kpi.avg_delivery_days} days to deliver.`},
+    {icon:"💳",type:"info",title:"Payment Preference",text:`73% of transactions use Credit Card with avg 3.5 installments. Boleto is second at 19%.`},
+    {icon:"🌍",type:"warning",title:"Geographic Risk",text:`São Paulo generates 37.5% of all revenue — high geographic concentration risk for business continuity.`},
+  ];
+  const strip=document.getElementById('insightsStrip');
+  insights.forEach(ins=>{
+    strip.innerHTML+=`<div class="insight-card" style="border-left:3px solid ${borderColor[ins.type]}">
+      <div class="insight-icon">${ins.icon}</div>
+      <div class="insight-title">${ins.title}</div>
+      <div class="insight-text">${ins.text}</div>
+    </div>`;
+  });
+})();
+</script>
+</body>
+</html>
