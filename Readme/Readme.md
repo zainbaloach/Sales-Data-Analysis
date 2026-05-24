@@ -8,7 +8,9 @@
 
 ## Live Dashboard
 
-[https://zainbaloach.github.io/Sales-Data-Analysis/](https://zainbaloach.github.io/Sales-Data-Analysis/)
+Live Dashboard:   https://zainbaloach.github.io/Sales-Data-Analysis/
+Live Report: https://zainbaloach.github.io/Sales-Data-Analysis/
+
 
 ## Project Files
 
@@ -210,8 +212,9 @@ An interactive dashboard and executive-style report were created to visualize:
 * Payment behavior
 
 AI tools were used to help improve the dashboard design, layout, and report presentation.
+## Live Dashboard & Report Link:
 
-[https://zainbaloach.github.io/Sales-Data-Analysis/](https://zainbaloach.github.io/Sales-Data-Analysis/)
+https://zainbaloach.github.io/Sales-Data-Analysis/
 
 ---
 
