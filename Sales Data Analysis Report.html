@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Market Intelligence Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F8F9FC;
+    --surface: #FFFFFF;
+    --navy: #0F172A;
+    --blue: #2563EB;
+    --blue-light: #EFF6FF;
+    --success: #059669;
+    --success-bg: #ECFDF5;
+    --warning: #D97706;
+    --warning-bg: #FFFBEB;
+    --danger: #DC2626;
+    --danger-bg: #FEF2F2;
+    --muted: #64748B;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --text: #1E293B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 40px 60px; }
+
+  /* ── COVER ─────────────────────────────────────── */
+  .cover {
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 56px;
+  }
+  .cover-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+  .logo-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: 0.05em;
+  }
+  .logo-box {
+    width: 36px; height: 36px;
+    background: var(--navy);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 16px;
+  }
+  .cover-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .cover-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .cover-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 28px;
+    letter-spacing: 0.02em;
+  }
+  .cover-badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 36px;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border-strong);
+    color: var(--navy);
+    background: var(--surface);
+  }
+  .cover-stat {
+    background: var(--navy);
+    color: white;
+    padding: 20px 28px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .cover-stat-label { font-size: 12px; color: #94A3B8; letter-spacing: 0.05em; text-transform: uppercase; }
+  .cover-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; color: white; }
+  .cover-stat-desc { font-size: 13px; color: #94A3B8; margin-top: 2px; }
+
+  /* ── SECTION STRUCTURE ─────────────────────────── */
+  .section { margin-bottom: 60px; }
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--border); }
+  .section-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 24px;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── KPI TILES ─────────────────────────────────── */
+  .kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px; }
+  .kpi-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 18px;
+  }
+  .kpi-tile-top { border-top: 3px solid var(--blue); }
+  .kpi-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .kpi-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+  .kpi-badge.up { background: var(--success-bg); color: var(--success); }
+  .kpi-badge.neutral { background: var(--blue-light); color: var(--blue); }
+
+  /* ── NARRATIVE ─────────────────────────────────── */
+  .narrative {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  /* ── CARDS ─────────────────────────────────────── */
+  canvas { display: block; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  /* ── GRID LAYOUTS ──────────────────────────────── */
+  .grid-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-6-4 { display: grid; grid-template-columns: 6fr 4fr; gap: 24px; }
+
+  /* ── DELIVERY KPI BOXES ────────────────────────── */
+  .delivery-kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+  }
+  .delivery-kpi:last-child { margin-bottom: 0; }
+  .delivery-kpi-label { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+  .delivery-kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+  .delivery-kpi-note { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 4px; display: inline-block; }
+  .note-green { background: var(--success-bg); color: var(--success); }
+  .note-blue  { background: var(--blue-light);  color: var(--blue); }
+
+  /* ── STATE TABLE ───────────────────────────────── */
+  .state-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .state-table th {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    text-align: left; padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .state-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .state-table tr:last-child td { border-bottom: none; }
+  .state-table tr.highlight { background: var(--blue-light); font-weight: 600; }
+  .state-bar-wrap { display: flex; align-items: center; }
+  .state-bar-bg   { flex: 1; height: 5px; background: var(--border); border-radius: 3px; }
+  .state-bar-fill { height: 5px; background: var(--blue); border-radius: 3px; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  /* ── REVENUE FINDINGS ──────────────────────────── */
+  .findings-list { list-style: none; }
+  .findings-list li {
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px; color: var(--text);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .findings-list li:last-child { border-bottom: none; }
+  .finding-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue); margin-top: 6px; flex-shrink: 0;
+  }
+
+  /* ── QUARTERLY TABLE ───────────────────────────── */
+  .q-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .q-table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); font-weight: 600; }
+  .q-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); }
+  .q-table tr:last-child td { border-bottom: none; }
+  .q-table .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--navy); }
+
+  /* ── FUNNEL ────────────────────────────────────── */
+  .funnel-wrap { display: flex; flex-direction: column; align-items: center; }
+  .funnel-tier {
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: 4px; padding: 12px 20px;
+    color: white; margin-bottom: 4px;
+    font-size: 13px; font-weight: 500;
+  }
+  .funnel-tier .tier-label { font-size: 12px; opacity: 0.85; }
+  .funnel-tier .tier-count { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; }
+  .funnel-tier .tier-pct   { font-family: 'JetBrains Mono', monospace; font-size: 13px; opacity: 0.85; }
+  .funnel-insight {
+    margin-top: 16px;
+    background: var(--warning-bg); border: 1px solid #FDE68A;
+    border-radius: 6px; padding: 12px 16px;
+    font-size: 12px; font-weight: 500; color: #92400E;
+    width: 100%; text-align: center;
+  }
+
+  /* ── SELLER TABLE ──────────────────────────────── */
+  .seller-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .seller-table th { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding: 10px 12px; text-align: left; border-bottom: 2px solid var(--border); font-weight: 600; }
+  .seller-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .seller-table tr:last-child td { border-bottom: none; }
+  .seller-table tr:hover { background: var(--bg); }
+  .revenue-bar-cell { display: flex; align-items: center; }
+  .rev-bar-bg   { width: 80px; height: 6px; background: var(--border); border-radius: 3px; flex-shrink: 0; }
+  .rev-bar-fill { height: 6px; border-radius: 3px; }
+
+  /* ── INSIGHT CALLOUT BOXES ─────────────────────── */
+  .insight-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .insight-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: 8px; padding: 18px 20px;
+  }
+  .insight-box-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .insight-box-icon { font-size: 20px; margin-bottom: 8px; }
+
+  /* ── RECOMMENDATION CARDS ──────────────────────── */
+  .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .rec-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 24px;
+  }
+  .rec-card-icon  { font-size: 24px; margin-bottom: 12px; }
+  .rec-card-title { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .rec-card-body  { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+  /* ── FOOTER ────────────────────────────────────── */
+  .report-footer {
+    border-top: 1px solid var(--border); padding: 20px 0;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--muted); margin-top: 60px;
+  }
+
+  /* ── PRINT ─────────────────────────────────────── */
+  @media print {
+    body { background: white; font-size: 12px; }
+    .page { max-width: 100%; padding: 20px 30px; }
+    .kpi-row { grid-template-columns: repeat(5, 1fr); }
+    .cover-title { font-size: 32px; }
+    canvas { max-height: 200px !important; }
+    .section-3-break { page-break-before: always; padding-top: 30px; }
+    .section-5-break { page-break-before: always; padding-top: 30px; }
+    .rec-grid, .grid-2, .grid-6-4 { display: grid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ COVER ══════════════════════════════════════════════════ -->
+  <div class="cover">
+    <div class="cover-meta">
+      <div class="logo-placeholder">
+        <div class="logo-box">🛒</div>
+        COMMERCE ANALYTICS
+      </div>
+      <div class="cover-date">Report Generated: May 13, 2026</div>
+    </div>
+    <div class="cover-title">E-Commerce Market<br>Intelligence Report</div>
+    <div class="cover-subtitle">Executive Performance Analysis &middot; January 2017 &ndash; August 2018</div>
+    <div class="cover-badges">
+      <span class="badge">CEO</span>
+      <span class="badge">CFO</span>
+      <span class="badge">COO</span>
+    </div>
+    <div class="cover-stat">
+      <div>
+        <div class="cover-stat-label">Headline Figure</div>
+        <div class="cover-stat-value">$16.0M</div>
+        <div class="cover-stat-desc">Total GMV across 99,441 orders in 20 months &mdash; with a 97.0% delivery success rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 1: EXECUTIVE SUMMARY ══════════════════════════ -->
+  <div class="section">
+    <div class="section-divider">
+      <span class="section-num">01 &mdash; Executive Summary</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">State of the Business</div>
+
+    <div class="kpi-row">
+      <div class="kpi-tile kpi-tile-top">
+        <div class="kpi-label">Total Revenue</div>
+        <div class="kpi-value">$16.0M</div>
+        <span class="kpi-badge up">↑ 104% YoY</span>
+      </div>
+      <div class="kpi-tile kpi-tile-top">
+        <div class="kpi-label">Total Orders</div>
+        <div class="kpi-value">99,441</div>
+        <span class="kpi-badge up">↑ High growth</span>
+      </div>
+      <div class="kpi-tile kpi-tile-top">
+        <div class="kpi-label">Delivery Rate</div>
+        <div class="kpi-value">97.0%</div>
+        <span class="kpi-badge up">↑ vs 89% avg</span>
+      </div>
+      <div class="kpi-tile kpi-tile-top">
+        <div class="kpi-label">Active Sellers</div>
+        <div class="kpi-value">3,095</div>
+        <span class="kpi-badge neutral">Marketplace</span>
+      </div>
+      <div class="kpi-tile kpi-tile-top">
+        <div class="kpi-label">Avg Order Value</div>
+        <div class="kpi-value">$160.99</div>
+        <span class="kpi-badge up">↑ Healthy AOV</span>
+      </div>
+    </div>
+
+    <div class="narrative">
+      The platform generated $16.0M in gross merchandise value across 99,441 orders between January 2017 and August 2018, demonstrating sustained month-over-month growth that peaked at $1.195M in November 2017 — a figure 104% above the January 2017 baseline of $138K, confirming strong organic demand acceleration. Operational performance is a standout strength: a 97.0% delivery rate against an industry average of 89%, a 92.4% on-time fulfillment rate, and a cancellation rate of just 0.63% signal a logistics infrastructure outperforming category norms by a significant margin. The primary strategic vulnerability is customer retention — with 96.9% of the 96,096 customer base purchasing only once, the platform is almost entirely dependent on new customer acquisition to sustain revenue, a structurally fragile growth model that requires immediate investment in repeat-purchase mechanisms to unlock the next phase of profitable scaling.
+    </div>
+  </div>
+
+  <!-- ══ SECTION 2: REVENUE PERFORMANCE ════════════════════════ -->
+  <div class="section">
+    <div class="section-divider">
+      <span class="section-num">02 &mdash; Revenue Performance</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Revenue &amp; Growth Trajectory</div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">Monthly Gross Revenue &mdash; Jan 2017 to Aug 2018</div>
+      <div style="height: 280px;">
+        <canvas id="revenueChart"></canvas>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Key Revenue Findings</div>
+        <ul class="findings-list">
+          <li><span class="finding-dot"></span><span>November 2017 was the peak month at <strong>$1.195M</strong>, driven by Black Friday demand — 34% above the trailing 3-month average of $893K.</span></li>
+          <li><span class="finding-dot"></span><span>Revenue in 2018 (Jan–Aug) averaged <strong>$1.07M/month</strong>, a 2.4× increase over the 2017 monthly average of $444K — confirming accelerating platform adoption.</span></li>
+          <li><span class="finding-dot"></span><span>Freight costs averaged <strong>6.8% of gross revenue</strong> across the period, a healthy logistics cost ratio that leaves margin headroom for competitive shipping offers.</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title">Quarterly Revenue Comparison</div>
+        <table class="q-table">
+          <thead>
+            <tr><th>Quarter</th><th>2017</th><th>2018 (Partial)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 (Jan–Mar)</td><td class="mono">$880K</td><td class="mono">$3.27M</td></tr>
+            <tr><td>Q2 (Apr–Jun)</td><td class="mono">$1.52M</td><td class="mono">$3.34M</td></tr>
+            <tr><td>Q3 (Jul–Sep)</td><td class="mono">$1.99M</td><td class="mono">$2.09M</td></tr>
+            <tr><td>Q4 (Oct–Dec)</td><td class="mono">$2.85M</td><td class="mono">&mdash;</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 12px; font-size: 11px; color: var(--muted);">2018 Q1 is 272% of 2017 Q1 — the strongest YoY growth quarter recorded.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3: OPERATIONAL HEALTH ════════════════════════ -->
+  <div class="section section-3-break">
+    <div class="section-divider">
+      <span class="section-num">03 &mdash; Operational Health</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Order Fulfillment &amp; Delivery Intelligence</div>
+
+    <div class="grid-6-4" style="margin-bottom: 24px;">
+      <div class="card">
+        <div class="card-title">Order Status Distribution</div>
+        <div style="height: 220px;">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+      <div>
+        <div class="delivery-kpi">
+          <div class="delivery-kpi-label">On-Time Delivery Rate</div>
+          <div class="delivery-kpi-value">92.4%</div>
+          <span class="delivery-kpi-note note-green">↑ Above industry avg of 78%</span>
+        </div>
+        <div class="delivery-kpi">
+          <div class="delivery-kpi-label">Avg Delivery Time</div>
+          <div class="delivery-kpi-value">12.1 days</div>
+          <span class="delivery-kpi-note note-blue">Median 8–14 day window</span>
+        </div>
+        <div class="delivery-kpi">
+          <div class="delivery-kpi-label">Cancellation Rate</div>
+          <div class="delivery-kpi-value">0.63%</div>
+          <span class="delivery-kpi-note note-green">↓ Well below 5% benchmark</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Delivery Time Distribution &mdash; 96,457 Delivered Orders</div>
+      <div style="height: 200px;">
+        <canvas id="deliveryHistChart"></canvas>
+      </div>
+      <div style="margin-top: 12px; font-size: 12px; color: var(--muted); padding: 10px 14px; background: var(--blue-light); border-radius: 6px;">
+        <strong style="color: var(--blue);">Peak delivery window:</strong> The 8–14 day band accounts for 37.7% of all delivered orders (36,397), making it the dominant fulfillment range. Combined with the 0–7 day band (34.9%), over 72% of orders arrive within two weeks — a strong operational benchmark.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: REVENUE BREAKDOWN ══════════════════════════ -->
+  <div class="section">
+    <div class="section-divider">
+      <span class="section-num">04 &mdash; Revenue Breakdown</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Category &amp; Geographic Revenue Intelligence</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Top 10 Product Categories by Revenue</div>
+        <div style="height: 300px;">
+          <canvas id="categoryChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Revenue by Region &mdash; Top 10 States</div>
+        <table class="state-table">
+          <thead>
+            <tr>
+              <th>State</th>
+              <th>Revenue</th>
+              <th>Orders</th>
+              <th>% Total</th>
+              <th>Share</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight">
+              <td><span class="mono">SP</span></td>
+              <td><span class="mono">$6.00M</span></td>
+              <td><span class="mono">41,745</span></td>
+              <td><span class="mono">37.5%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:100%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">RJ</span></td>
+              <td><span class="mono">$2.14M</span></td>
+              <td><span class="mono">12,852</span></td>
+              <td><span class="mono">13.4%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:36%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">MG</span></td>
+              <td><span class="mono">$1.87M</span></td>
+              <td><span class="mono">11,635</span></td>
+              <td><span class="mono">11.7%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:31%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">RS</span></td>
+              <td><span class="mono">$891K</span></td>
+              <td><span class="mono">5,466</span></td>
+              <td><span class="mono">5.6%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:15%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">PR</span></td>
+              <td><span class="mono">$811K</span></td>
+              <td><span class="mono">5,045</span></td>
+              <td><span class="mono">5.1%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:14%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">SC</span></td>
+              <td><span class="mono">$623K</span></td>
+              <td><span class="mono">3,637</span></td>
+              <td><span class="mono">3.9%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:10%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">BA</span></td>
+              <td><span class="mono">$617K</span></td>
+              <td><span class="mono">3,380</span></td>
+              <td><span class="mono">3.9%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:10%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">DF</span></td>
+              <td><span class="mono">$355K</span></td>
+              <td><span class="mono">2,140</span></td>
+              <td><span class="mono">2.2%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:6%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">GO</span></td>
+              <td><span class="mono">$350K</span></td>
+              <td><span class="mono">2,020</span></td>
+              <td><span class="mono">2.2%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:6%"></div></div></div></td>
+            </tr>
+            <tr>
+              <td><span class="mono">ES</span></td>
+              <td><span class="mono">$326K</span></td>
+              <td><span class="mono">2,033</span></td>
+              <td><span class="mono">2.0%</span></td>
+              <td><div class="state-bar-wrap"><div class="state-bar-bg"><div class="state-bar-fill" style="width:5%"></div></div></div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 10px; font-size: 11px; color: var(--muted);">SP row highlighted. Top 3 states account for 62.6% of total revenue.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 5: CUSTOMER & PAYMENT ════════════════════════ -->
+  <div class="section section-5-break">
+    <div class="section-divider">
+      <span class="section-num">05 &mdash; Customer &amp; Payment Intelligence</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Customer Behavior &amp; Payment Patterns</div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Payment Method Mix</div>
+        <div style="height: 240px; display: flex; align-items: center; justify-content: center;">
+          <canvas id="paymentChart"></canvas>
+        </div>
+        <div style="margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div style="padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
+            <div style="color: var(--muted); margin-bottom: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">Credit Card</div>
+            <div class="mono" style="font-size: 13px; color: var(--navy); font-weight: 700;">73% &middot; $12.5M</div>
+            <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">Avg 3.5 installments</div>
+          </div>
+          <div style="padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
+            <div style="color: var(--muted); margin-bottom: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">Boleto</div>
+            <div class="mono" style="font-size: 13px; color: var(--navy); font-weight: 700;">19% &middot; $2.9M</div>
+            <div style="font-size: 10px; color: var(--muted); margin-top: 2px;">Instant settlement</div>
+          </div>
+          <div style="padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
+            <div style="color: var(--muted); margin-bottom: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">Voucher</div>
+            <div class="mono" style="font-size: 13px; color: var(--navy); font-weight: 700;">5.5% &middot; $379K</div>
+          </div>
+          <div style="padding: 8px 10px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border);">
+            <div style="color: var(--muted); margin-bottom: 2px; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;">Debit Card</div>
+            <div class="mono" style="font-size: 13px; color: var(--navy); font-weight: 700;">1.5% &middot; $218K</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Customer Retention Funnel</div>
+        <div class="funnel-wrap" style="margin-top: 8px;">
+          <div class="funnel-tier" style="background: #2563EB; width: 100%;">
+            <div>
+              <div class="tier-label">Total Unique Customers</div>
+              <div class="tier-count">96,096</div>
+            </div>
+            <div class="tier-pct">100%</div>
+          </div>
+          <div class="funnel-tier" style="background: #1E3A8A; width: 70%;">
+            <div>
+              <div class="tier-label">Repeat Customers (2+ orders)</div>
+              <div class="tier-count">2,986</div>
+            </div>
+            <div class="tier-pct">3.1%</div>
+          </div>
+          <div class="funnel-tier" style="background: #0F172A; width: 40%;">
+            <div>
+              <div class="tier-label">Loyal Customers (3+ orders)</div>
+              <div class="tier-count">241</div>
+            </div>
+            <div class="tier-pct">0.25%</div>
+          </div>
+          <div class="funnel-insight">
+            ⚠ 96.9% of customers are one-time buyers — massive retention opportunity
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 6: SELLER ECOSYSTEM ══════════════════════════ -->
+  <div class="section">
+    <div class="section-divider">
+      <span class="section-num">06 &mdash; Seller Ecosystem</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Seller Performance &amp; Market Concentration</div>
+
+    <div class="card" style="margin-bottom: 20px; overflow-x: auto;">
+      <div class="card-title">Top 15 Sellers by Revenue</div>
+      <table class="seller-table">
+        <thead>
+          <tr>
+            <th style="width:48px">Rank</th>
+            <th>Seller ID</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Revenue</th>
+            <th>% of Total</th>
+            <th style="width:120px">Share</th>
+          </tr>
+        </thead>
+        <tbody id="sellerTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="insight-boxes">
+      <div class="insight-box">
+        <div class="insight-box-icon">🏆</div>
+        <div class="insight-box-text"><strong>Top seller (Itaquaquecetuba, SP)</strong> generated $507K — 3.2% of total platform revenue from a single seller, indicating exceptional individual scale and a high dependency concentration risk.</div>
+      </div>
+      <div class="insight-box">
+        <div class="insight-box-icon">📍</div>
+        <div class="insight-box-text"><strong>90% of top-15 sellers</strong> are concentrated in São Paulo state — mirroring the geographic revenue pattern. Expanding the seller base into RJ and MG is essential for supply chain resilience.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 7: STRATEGIC RECOMMENDATIONS ═════════════════ -->
+  <div class="section">
+    <div class="section-divider">
+      <span class="section-num">07 &mdash; Strategic Priorities</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="section-headline">Strategic Priorities for 2018&ndash;2019</div>
+
+    <div class="rec-grid">
+      <div class="rec-card" style="border-top: 3px solid var(--blue);">
+        <div class="rec-card-icon">🎯</div>
+        <div class="rec-card-title">Retention Investment</div>
+        <div class="rec-card-body">With 96.9% one-time buyers, even a 5% shift to repeat purchasing would add approximately $800K in annual incremental revenue at near-zero acquisition cost. Launch a tiered loyalty program, post-purchase email re-engagement sequences, and personalized cross-sell recommendations within 30 days of first purchase.</div>
+      </div>
+      <div class="rec-card" style="border-top: 3px solid var(--warning);">
+        <div class="rec-card-icon">🌍</div>
+        <div class="rec-card-title">Geographic Diversification</div>
+        <div class="rec-card-body">SP's 37.5% revenue concentration creates systemic business continuity risk — any logistics disruption, tax change, or competitive entry in this region directly threatens platform performance. Prioritize targeted seller acquisition and fulfillment investment in RJ (13.4%), MG (11.7%), and RS (5.6%) to rebalance the revenue footprint over 12 months.</div>
+      </div>
+      <div class="rec-card" style="border-top: 3px solid var(--success);">
+        <div class="rec-card-icon">📦</div>
+        <div class="rec-card-title">Delivery Speed Edge</div>
+        <div class="rec-card-body">A 92.4% on-time rate is a genuine competitive advantage — but 4,117 orders (4.3%) arriving 30+ days late represent a disproportionate reputational liability and a churn trigger. Identify the specific carrier-route-seller combinations responsible for these outliers, negotiate SLA penalties, and publish delivery guarantees as an acquisition differentiator.</div>
+      </div>
+      <div class="rec-card" style="border-top: 3px solid var(--danger);">
+        <div class="rec-card-icon">💳</div>
+        <div class="rec-card-title">Payment Flexibility</div>
+        <div class="rec-card-body">73% credit card reliance with an average of 3.5 installments signals a price-sensitive customer base stretching purchasing power. Explore BNPL (Buy Now Pay Later) partnerships to extend installment flexibility, potentially unlocking higher-AOV purchase categories currently beyond one-time payment thresholds for mid-income segments.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ═════════════════════════════════════════════════ -->
+  <div class="report-footer">
+    <div>Confidential &mdash; For Internal Use Only</div>
+    <div style="text-align:center;">Generated May 13, 2026</div>
+    <div>Data source: E-Commerce Public Dataset &middot; 99,441 orders</div>
+  </div>
+
+</div><!-- end .page -->
+
+<script>
+// ── Revenue Area Chart ────────────────────────────────────────
+(function () {
+  const labels = ['Jan 17','Feb 17','Mar 17','Apr 17','May 17','Jun 17','Jul 17','Aug 17','Sep 17','Oct 17','Nov 17','Dec 17','Jan 18','Feb 18','Mar 18','Apr 18','May 18','Jun 18','Jul 18','Aug 18'];
+  const data   = [138, 292, 450, 418, 593, 511, 592, 674, 728, 780, 1195, 878, 1115, 992, 1160, 1161, 1154, 1024, 1067, 1022];
+
+  const peakPlugin = {
+    id: 'peakAnnotation',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      const x = scales.x.getPixelForValue(10); // Nov 17 index
+      ctx.save();
+      ctx.setLineDash([5, 4]);
+      ctx.strokeStyle = '#DC2626';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#DC2626';
+      ctx.font = '600 10px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('Peak Month', x, chartArea.top - 6);
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('revenueChart').getContext('2d'), {
+    type: 'line',
+    plugins: [peakPlugin],
+    data: {
+      labels,
+      datasets: [{
+        label: 'Revenue ($K)',
+        data,
+        borderColor: '#2563EB',
+        backgroundColor: 'rgba(37,99,235,0.08)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#2563EB',
+        pointHoverRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          titleColor: '#94A3B8',
+          bodyColor: '#F8FAFC',
+          padding: 10,
+          callbacks: { label: c => `$${c.parsed.y.toLocaleString()}K` }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#64748B' } },
+        y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#64748B', callback: v => `$${v}K` }, beginAtZero: true }
+      }
+    }
+  });
+}());
+
+// ── Order Status Horizontal Bar ───────────────────────────────
+(function () {
+  new Chart(document.getElementById('statusChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Delivered','Shipped','Unavailable','Canceled','Invoiced','Processing'],
+      datasets: [{
+        data: [96478, 1107, 609, 625, 314, 301],
+        backgroundColor: ['#059669','#2563EB','#94A3B8','#DC2626','#64748B','#B0BEC5'],
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          bodyColor: '#F8FAFC',
+          titleColor: '#94A3B8',
+          callbacks: { label: c => ` ${c.parsed.x.toLocaleString()} orders` }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#64748B', callback: v => v >= 1000 ? `${(v/1000).toFixed(0)}K` : v } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#374151' } }
+      }
+    }
+  });
+}());
+
+// ── Delivery Time Histogram ───────────────────────────────────
+(function () {
+  const counts = [33683, 36397, 15369, 6891, 4117];
+  const total  = counts.reduce((a, b) => a + b, 0);
+
+  new Chart(document.getElementById('deliveryHistChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['0–7 days','8–14 days','15–21 days','22–30 days','30+ days'],
+      datasets: [{
+        data: counts,
+        backgroundColor: ['#2563EB','#1D4ED8','#64748B','#94A3B8','#DC2626'],
+        borderRadius: 5,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          bodyColor: '#F8FAFC',
+          titleColor: '#94A3B8',
+          callbacks: { label: c => ` ${c.parsed.y.toLocaleString()} orders (${(c.parsed.y / total * 100).toFixed(1)}%)` }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 }, color: '#374151' } },
+        y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#64748B', callback: v => `${(v/1000).toFixed(0)}K` } }
+      }
+    }
+  });
+}());
+
+// ── Top 10 Categories Horizontal Bar ─────────────────────────
+(function () {
+  const cats = ['Cool Stuff','Garden','Automotive','Housewares','Sport','Watches','Furniture','Comp. Accessories','Health Beauty','Bed & Bath'];
+  const vals = [780, 838, 852, 1094, 1392, 1429, 1430, 1585, 1657, 1713];
+  const blues = ['#BFDBFE','#93C5FD','#60A5FA','#3B82F6','#2563EB','#1D4ED8','#1E40AF','#1E3A8A','#172554','#0F172A'];
+
+  new Chart(document.getElementById('categoryChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: cats,
+      datasets: [{
+        data: vals,
+        backgroundColor: blues,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          bodyColor: '#F8FAFC',
+          titleColor: '#94A3B8',
+          callbacks: { label: c => ` $${(c.parsed.x / 1000).toFixed(2)}M` }
+        }
+      },
+      scales: {
+        x: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'JetBrains Mono', size: 10 }, color: '#64748B', callback: v => `$${(v/1000).toFixed(0)}K` } },
+        y: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 }, color: '#374151' } }
+      }
+    }
+  });
+}());
+
+// ── Payment Donut ─────────────────────────────────────────────
+(function () {
+  new Chart(document.getElementById('paymentChart').getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Credit Card','Boleto','Voucher','Debit Card'],
+      datasets: [{
+        data: [73, 19, 5.5, 1.5],
+        backgroundColor: ['#1E3A8A','#2563EB','#60A5FA','#BFDBFE'],
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          bodyColor: '#F8FAFC',
+          titleColor: '#94A3B8',
+          callbacks: { label: c => ` ${c.parsed}% of transactions` }
+        }
+      }
+    }
+  });
+}());
+
+// ── Seller Leaderboard Table ──────────────────────────────────
+(function () {
+  const sellers = [
+    { id: '7c67e144', city: 'Itaquaquecetuba', state: 'SP', rev: 507166 },
+    { id: '1025f0e2', city: 'São Paulo',        state: 'SP', rev: 308222 },
+    { id: '4a3ca931', city: 'Ibitinga',          state: 'SP', rev: 301245 },
+    { id: '1f50f920', city: 'São José do Rio Preto', state: 'SP', rev: 290253 },
+    { id: '53243585', city: 'Lauro de Freitas',  state: 'BA', rev: 284903 },
+    { id: 'da8622b1', city: 'Piracicaba',        state: 'SP', rev: 272219 },
+    { id: '4869f7a5', city: 'Guariba',           state: 'SP', rev: 264166 },
+    { id: '955fee92', city: 'São Paulo',         state: 'SP', rev: 236322 },
+    { id: 'fa1c13f2', city: 'Sumaré',            state: 'SP', rev: 206513 },
+    { id: '7e93a43e', city: 'Barueri',           state: 'SP', rev: 185134 },
+    { id: '6560211a', city: 'São Paulo',         state: 'SP', rev: 179658 },
+    { id: '7a67c85e', city: 'São Paulo',         state: 'SP', rev: 169031 },
+    { id: '25c5c91f', city: 'Itaúna',            state: 'MG', rev: 160535 },
+    { id: 'a1043baf', city: 'Ilicínea',          state: 'MG', rev: 154357 },
+    { id: '46dc3b2c', city: 'Rio de Janeiro',    state: 'RJ', rev: 148864 },
+  ];
+
+  const maxRev   = sellers[0].rev;
+  const totalRev = 16008872;
+  const medals   = ['🥇','🥈','🥉'];
+  const barColors = { 0: '#F59E0B', 1: '#94A3B8', 2: '#CD7F32' };
+
+  const tbody = document.getElementById('sellerTableBody');
+  sellers.forEach((s, i) => {
+    const pct      = (s.rev / totalRev * 100).toFixed(2);
+    const barWidth = Math.round(s.rev / maxRev * 100);
+    const revStr   = s.rev >= 1e6 ? `$${(s.rev/1e6).toFixed(2)}M` : `$${Math.round(s.rev/1000)}K`;
+    const barColor = barColors[i] || '#2563EB';
+    const rank     = i < 3
+      ? medals[i]
+      : `<span style="color:#94A3B8;font-size:12px;font-family:'JetBrains Mono',monospace;">#${i+1}</span>`;
+
+    tbody.innerHTML += `
+      <tr>
+        <td style="text-align:center">${rank}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#0F172A;">${s.id}</span></td>
+        <td style="font-size:12px;color:#374151;">${s.city}</td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;padding:2px 6px;border-radius:3px;">${s.state}</span></td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#0F172A;">${revStr}</span></td>
+        <td><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748B;">${pct}%</span></td>
+        <td><div class="revenue-bar-cell"><div class="rev-bar-bg"><div class="rev-bar-fill" style="width:${barWidth}%;background:${barColor};"></div></div></div></td>
+      </tr>`;
+  });
+}());
+</script>
+</body>
+</html>
